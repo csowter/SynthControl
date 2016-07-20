@@ -1,8 +1,10 @@
 #include "SynthControl.h"
 #include <cstdio>
-#include "Widget.h"
+#include <algorithm>
+#include "Button.h"
 
 cSynthControl::cSynthControl()
+	: button1(0, 0, 10, 10), button2(10, 10, 10, 10)
 {
 	mWindow = SDL_CreateWindow("Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, cSynthControl::WindowInitialWidth, cSynthControl::WindowInitialHeight, SDL_WINDOW_SHOWN);
 	if(mWindow == NULL)
@@ -12,6 +14,10 @@ cSynthControl::cSynthControl()
 	}
 
 	mSurface = SDL_GetWindowSurface(mWindow);
+
+	mWidgets.push_back(&button1);
+	mWidgets.push_back(&button2);
+
 	Run();
 }
 
@@ -21,14 +27,16 @@ void cSynthControl::Run()
 	while(mRunning)
 	{
 		HandleEvents();
-		cWidget w1(0,0,10,10);
-		cWidget w2(10, 10, 10, 10);
 
-		w1.Render(mSurface); 
-		w2.Render(mSurface);
-
+		RenderWidgets();
+		
 		SDL_UpdateWindowSurface(mWindow);
 	}
+}
+
+void cSynthControl::RenderWidgets()
+{
+	std::for_each(mWidgets.begin(), mWidgets.end(), [this](cWidget *widget){ widget->Render(mSurface); });
 }
 
 void cSynthControl::KeyDown(SDL_Event &e)
@@ -43,6 +51,11 @@ void cSynthControl::KeyUp(SDL_Event &e)
 
 void cSynthControl::MouseButtonDown(SDL_Event &e)
 {
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+
+	std::for_each(mWidgets.begin(), mWidgets.end(), [&](cWidget *widget){ if(widget->ContainsPoint(x, y)){ widget->MouseEvent(e); }});
+
 	switch(e.button.button)
 	{
 	case SDL_BUTTON_LEFT:

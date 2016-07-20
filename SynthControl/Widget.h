@@ -6,7 +6,7 @@
 
 class cWidget
 {
-private:
+protected:
 	SDL_Rect mBoundingRectangle;
 	bool mVisible;
 
@@ -18,8 +18,11 @@ public:
 	const SDL_Rect& GetBounds() const;
 	bool GetVisible() const { return mVisible; }
 	void SetVisible(bool visible) { mVisible = visible; }
+	bool ContainsPoint(uint32_t x, uint32_t y);
 
-	virtual void Render(SDL_Surface *surface);
+	virtual void MouseEvent(SDL_Event &e) = 0;
+
+	virtual void Render(SDL_Surface *surface) = 0;
 };
 
 #endif
