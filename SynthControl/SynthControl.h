@@ -24,6 +24,8 @@ private:
 	void HandleEvents();
 	void KeyDown(SDL_Event &e);
 	void KeyUp(SDL_Event &e);
+	void MouseButtonDown(SDL_Event &e);
+	void MouseButtonUp(SDL_Event &e);
 };
 
 #endif

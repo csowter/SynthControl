@@ -1,5 +1,6 @@
 #include "SynthControl.h"
 #include <cstdio>
+#include "Widget.h"
 
 cSynthControl::cSynthControl()
 {
@@ -20,6 +21,13 @@ void cSynthControl::Run()
 	while(mRunning)
 	{
 		HandleEvents();
+		cWidget w1(0,0,10,10);
+		cWidget w2(10, 10, 10, 10);
+
+		w1.Render(mSurface); 
+		w2.Render(mSurface);
+
+		SDL_UpdateWindowSurface(mWindow);
 	}
 }
 
@@ -31,6 +39,38 @@ void cSynthControl::KeyDown(SDL_Event &e)
 void cSynthControl::KeyUp(SDL_Event &e)
 {
 	printf("Key up %s\r\n", SDL_GetKeyName(e.key.keysym.sym));
+}
+
+void cSynthControl::MouseButtonDown(SDL_Event &e)
+{
+	switch(e.button.button)
+	{
+	case SDL_BUTTON_LEFT:
+		printf("Left Mouse Down\r\n");
+		break;
+	case SDL_BUTTON_MIDDLE:
+		printf("Middle Mouse Down\r\n");
+		break;
+	case SDL_BUTTON_RIGHT:
+		printf("Right Mouse Down\r\n");
+		break;
+	}
+}
+
+void cSynthControl::MouseButtonUp(SDL_Event &e)
+{
+	switch(e.button.button)
+	{
+	case SDL_BUTTON_LEFT:
+		printf("Left Mouse Up\r\n");
+		break;
+	case SDL_BUTTON_MIDDLE:
+		printf("Middle Mouse Up\r\n");
+		break;
+	case SDL_BUTTON_RIGHT:
+		printf("Right Mouse Up\r\n");
+		break;
+	}
 }
 
 void cSynthControl::HandleEvents()
@@ -48,6 +88,12 @@ void cSynthControl::HandleEvents()
 			break;
 		case SDL_KEYUP:
 			KeyUp(e);
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			MouseButtonDown(e);
+			break;
+		case SDL_MOUSEBUTTONUP:
+			MouseButtonUp(e);
 			break;
 		}
 	}
