@@ -15,6 +15,7 @@ private:
 
 	SDL_Window *mWindow;
 	SDL_Surface *mSurface;
+	SDL_Renderer *mRenderer;
 	bool mRunning;
 
 

@@ -4,9 +4,10 @@
 #include "Button.h"
 
 cSynthControl::cSynthControl()
-	: button1(0, 0, 10, 10), button2(10, 10, 10, 10)
+	: button1(0, 0, 25, 25), button2(0, 50, 25, 25)
 {
 	mWindow = SDL_CreateWindow("Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, cSynthControl::WindowInitialWidth, cSynthControl::WindowInitialHeight, SDL_WINDOW_SHOWN);
+	
 	if(mWindow == NULL)
 	{
 		printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -14,6 +15,7 @@ cSynthControl::cSynthControl()
 	}
 
 	mSurface = SDL_GetWindowSurface(mWindow);
+	mRenderer = SDL_GetRenderer(mWindow);
 
 	mWidgets.push_back(&button1);
 	mWidgets.push_back(&button2);
@@ -36,26 +38,33 @@ void cSynthControl::Run()
 
 void cSynthControl::RenderWidgets()
 {
+	SDL_Rect rect = { 0, 0, cSynthControl::WindowInitialWidth, cSynthControl::WindowInitialHeight };
+	SDL_FillRect(mSurface, &rect, 0x00000000);
 	std::for_each(mWidgets.begin(), mWidgets.end(), [this](cWidget *widget){ widget->Render(mSurface); });
 }
 
-void cSynthControl::KeyDown(SDL_Event &e)
+void cSynthControl::KeyDown(SDL_Event &)
 {
+#ifdef KEY_DEBUG
 	printf("Key down %s\r\n", SDL_GetKeyName(e.key.keysym.sym));
+#endif
 }
 
 void cSynthControl::KeyUp(SDL_Event &e)
 {
+#ifdef KEY_DEBUG
 	printf("Key up %s\r\n", SDL_GetKeyName(e.key.keysym.sym));
+#endif
+	if(e.key.keysym.sym == SDLK_h)
+		std::for_each(mWidgets.begin(), mWidgets.end(), [this](cWidget *widget){ widget->SetVisible(false); });
+	else if(e.key.keysym.sym == SDLK_s)
+		std::for_each(mWidgets.begin(), mWidgets.end(), [this](cWidget *widget){ widget->SetVisible(true); });
 }
 
 void cSynthControl::MouseButtonDown(SDL_Event &e)
 {
-	int x, y;
-	SDL_GetMouseState(&x, &y);
-
-	std::for_each(mWidgets.begin(), mWidgets.end(), [&](cWidget *widget){ if(widget->ContainsPoint(x, y)){ widget->MouseEvent(e); }});
-
+	std::for_each(mWidgets.begin(), mWidgets.end(), [&](cWidget *widget){ widget->MouseDown(e); });
+#ifdef MOUSE_DEBUG
 	switch(e.button.button)
 	{
 	case SDL_BUTTON_LEFT:
@@ -68,10 +77,13 @@ void cSynthControl::MouseButtonDown(SDL_Event &e)
 		printf("Right Mouse Down\r\n");
 		break;
 	}
+#endif
 }
 
 void cSynthControl::MouseButtonUp(SDL_Event &e)
 {
+	std::for_each(mWidgets.begin(), mWidgets.end(), [&](cWidget *widget){ widget->MouseUp(e); });
+#ifdef MOUSE_DEBUG
 	switch(e.button.button)
 	{
 	case SDL_BUTTON_LEFT:
@@ -84,6 +96,7 @@ void cSynthControl::MouseButtonUp(SDL_Event &e)
 		printf("Right Mouse Up\r\n");
 		break;
 	}
+#endif
 }
 
 void cSynthControl::HandleEvents()
@@ -114,5 +127,6 @@ void cSynthControl::HandleEvents()
 
 cSynthControl::~cSynthControl()
 {
+	SDL_DestroyRenderer(mRenderer);
 	SDL_DestroyWindow(mWindow);
 }

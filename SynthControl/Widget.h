@@ -18,9 +18,13 @@ public:
 	const SDL_Rect& GetBounds() const;
 	bool GetVisible() const { return mVisible; }
 	void SetVisible(bool visible) { mVisible = visible; }
-	bool ContainsPoint(uint32_t x, uint32_t y);
+	bool ContainsPoint(int32_t x, int32_t y);
 
-	virtual void MouseEvent(SDL_Event &e) = 0;
+
+	virtual void MouseDown(SDL_Event &e) = 0;
+	virtual void MouseUp(SDL_Event &e) = 0;
+
+
 
 	virtual void Render(SDL_Surface *surface) = 0;
 };

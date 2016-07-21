@@ -4,13 +4,19 @@
 cButton::cButton(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 	: cWidget(x, y, width, height), mColour(0xff0000ff)
 {
+	mSurface = SDL_CreateRGBSurface(0, mBoundingRectangle.w, mBoundingRectangle.h,
+		32, 0xff000000, 0x00ff0000, 0x000000ff00, 0x000000ff);
+}
 
+cButton::~cButton()
+{
+	SDL_FreeSurface(mSurface);
 }
 
 void cButton::Render(SDL_Surface *surface)
 {
-	SDL_Surface *widgetSurface = SDL_CreateRGBSurface(0, mBoundingRectangle.w, mBoundingRectangle.h,
-		32, 0xff000000, 0x00ff0000, 0x000000ff00, 0x000000ff);
+	if(!mVisible)
+		return;
 
 	SDL_Rect Rect;
 	Rect.x = 0;
@@ -18,19 +24,20 @@ void cButton::Render(SDL_Surface *surface)
 	Rect.w = mBoundingRectangle.w;
 	Rect.h = mBoundingRectangle.h;
 
-	SDL_FillRect(widgetSurface, &Rect, mColour);
-	SDL_BlitSurface(widgetSurface, &Rect, surface, &mBoundingRectangle);
-
-	SDL_FreeSurface(widgetSurface);
+	SDL_FillRect(mSurface, &Rect, mColour);
+	SDL_BlitSurface(mSurface, &Rect, surface, &mBoundingRectangle);
 }
 
-void cButton::MouseEvent(SDL_Event &e)
+void cButton::MouseDown(SDL_Event &)
 {
-	uint32_t rgb = (mColour & 0xffffff00) >> 8;
-	rgb >>= 1;
-	mColour &= 0x000000ff;
-	mColour |= (rgb << 8);
+	int x, y;
+	SDL_GetMouseState(&x, &y);
 
-	printf("ButtonPress\r\n");
+	if(ContainsPoint(x, y))
+		mColour = 0x00FF00FF; 
 }
 
+void cButton::MouseUp(SDL_Event &)
+{
+	mColour = 0xFF0000FF;
+}
