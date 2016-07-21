@@ -4,7 +4,6 @@
 #include "Button.h"
 
 cSynthControl::cSynthControl()
-	: button1(0, 0, 25, 25), button2(0, 50, 25, 25)
 {
 	mWindow = SDL_CreateWindow("Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, cSynthControl::WindowInitialWidth, cSynthControl::WindowInitialHeight, SDL_WINDOW_SHOWN);
 	
@@ -15,10 +14,10 @@ cSynthControl::cSynthControl()
 	}
 
 	mSurface = SDL_GetWindowSurface(mWindow);
-	mRenderer = SDL_GetRenderer(mWindow);
+	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED);
 
-	mWidgets.push_back(&button1);
-	mWidgets.push_back(&button2);
+	mWidgets.push_back(new cButton(mRenderer, 0,0,25,25));
+	mWidgets.push_back(new cButton(mRenderer, 50,50,50,50));
 
 	Run();
 }
@@ -31,8 +30,8 @@ void cSynthControl::Run()
 		HandleEvents();
 
 		RenderWidgets();
-		
-		SDL_UpdateWindowSurface(mWindow);
+
+		SDL_RenderPresent(mRenderer);
 	}
 }
 
@@ -40,7 +39,7 @@ void cSynthControl::RenderWidgets()
 {
 	SDL_Rect rect = { 0, 0, cSynthControl::WindowInitialWidth, cSynthControl::WindowInitialHeight };
 	SDL_FillRect(mSurface, &rect, 0x00000000);
-	std::for_each(mWidgets.begin(), mWidgets.end(), [this](cWidget *widget){ widget->Render(mSurface); });
+	std::for_each(mWidgets.begin(), mWidgets.end(), [this](cWidget *widget){ widget->Render(mRenderer); });
 }
 
 void cSynthControl::KeyDown(SDL_Event &)

@@ -1,16 +1,23 @@
 #include "Button.h"
 #include <cstdio>
 
-cButton::cButton(uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+cButton::cButton(SDL_Renderer *renderer, uint32_t x, uint32_t y, uint32_t width, uint32_t height)
 	: cWidget(x, y, width, height), mColour(0xff0000ff)
 {
 	mSurface = SDL_CreateRGBSurface(0, mBoundingRectangle.w, mBoundingRectangle.h,
 		32, 0xff000000, 0x00ff0000, 0x000000ff00, 0x000000ff);
+
+	mTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, width, height);
 }
 
 cButton::~cButton()
 {
 	SDL_FreeSurface(mSurface);
+}
+
+void cButton::Render(SDL_Renderer *renderer)
+{
+
 }
 
 void cButton::Render(SDL_Surface *surface)

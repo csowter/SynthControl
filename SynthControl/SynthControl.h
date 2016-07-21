@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "Button.h"
+class cWidget;
 
 class cSynthControl
 {
@@ -17,10 +17,6 @@ private:
 	SDL_Surface *mSurface;
 	SDL_Renderer *mRenderer;
 	bool mRunning;
-
-
-	cButton button1;
-	cButton button2;
 
 	std::vector<cWidget *> mWidgets;
 
