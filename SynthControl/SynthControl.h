@@ -4,8 +4,9 @@
 #include <SDL.h>
 #include <cstdint>
 #include <vector>
+#include "AudioCore.h"
 
-#include "Sinusoid.h"
+
 class cWidget;
 
 class cSynthControl
@@ -21,7 +22,7 @@ private:
 
 	std::vector<cWidget *> mWidgets;
 
-	Sinusoid mSine;
+	cAudioCore mAudioCore;
 
 public:
 	cSynthControl();
@@ -35,8 +36,6 @@ private:
 	void KeyUp(SDL_Event &e);
 	void MouseButtonDown(SDL_Event &e);
 	void MouseButtonUp(SDL_Event &e);
-
-	void Button1(SDL_Event &e);
 
 	void CreateAudioDevice();
 };
