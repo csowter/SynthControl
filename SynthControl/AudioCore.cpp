@@ -34,7 +34,7 @@ void cAudioCore::OpenAudioDevice()
 	audioSpecDesired.channels = 2;
 	audioSpecDesired.callback = audioCallback;
 	audioSpecDesired.userdata = &mSine;
-	audioSpecDesired.samples = 1024;
+	audioSpecDesired.samples = 512;
 
 	SDL_AudioDeviceID device = SDL_OpenAudioDevice(NULL, 0, &audioSpecDesired, &audioSpecActual, SDL_AUDIO_ALLOW_ANY_CHANGE);
 	int NumberOFDevices = SDL_GetNumAudioDevices(0);

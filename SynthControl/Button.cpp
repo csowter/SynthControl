@@ -62,8 +62,7 @@ void cButton::MouseDown(SDL_Event &e)
 	if(ContainsPoint(x, y))
 	{
 		mPressed = true;
-		if(mEventHandler != nullptr)
-			mEventHandler(e);
+		mEventHandler(e);
 	}
 }
 

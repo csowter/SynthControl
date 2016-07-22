@@ -15,12 +15,11 @@ public:
 	cWidget(uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 	virtual ~cWidget(){};
 
-	const SDL_Rect& GetBounds() const;
+	const SDL_Rect& GetBounds() const {	return mBoundingRectangle; }
 	bool GetVisible() const { return mVisible; }
 	void SetVisible(bool visible) { mVisible = visible; }
-	bool ContainsPoint(int32_t x, int32_t y);
-
-
+	bool ContainsPoint(int32_t x, int32_t y) const;
+	
 	virtual void MouseDown(SDL_Event &e) = 0;
 	virtual void MouseUp(SDL_Event &e) = 0;
 
