@@ -25,19 +25,19 @@ cSynthControl::cSynthControl()
 
 void cSynthControl::CreateWidgets()
 {
-	mWidgets.push_back(new cButton(mRenderer, 0, 600, 40, 40, [](SDL_Event &e) {printf("Button 1\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 50, 600, 40, 40, [](SDL_Event &e) {printf("Button 2\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 100, 600, 40, 40, [](SDL_Event &e){ printf("Button 3\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 150, 600, 40, 40, [](SDL_Event &e){ printf("Button 4\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 200, 600, 40, 40, [](SDL_Event &e){ printf("Button 5\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 250, 600, 40, 40, [](SDL_Event &e){ printf("Button 6\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 300, 600, 40, 40, [](SDL_Event &e){ printf("Button 7\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 350, 600, 40, 40, [](SDL_Event &e){ printf("Button 8\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 400, 600, 40, 40, [](SDL_Event &e){ printf("Button 9\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 450, 600, 40, 40, [](SDL_Event &e){ printf("Button 10\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 500, 600, 40, 40, [](SDL_Event &e){ printf("Button 11\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 550, 600, 40, 40, [](SDL_Event &e){ printf("Button 12\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 600, 600, 40, 40, [](SDL_Event &e){ printf("Button 13\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 0, 600, 40, 40, [](SDL_Event &) {printf("Button 1\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 50, 600, 40, 40, [](SDL_Event &) {printf("Button 2\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 100, 600, 40, 40, [](SDL_Event &){ printf("Button 3\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 150, 600, 40, 40, [](SDL_Event &){ printf("Button 4\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 200, 600, 40, 40, [](SDL_Event &){ printf("Button 5\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 250, 600, 40, 40, [](SDL_Event &){ printf("Button 6\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 300, 600, 40, 40, [](SDL_Event &){ printf("Button 7\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 350, 600, 40, 40, [](SDL_Event &){ printf("Button 8\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 400, 600, 40, 40, [](SDL_Event &){ printf("Button 9\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 450, 600, 40, 40, [](SDL_Event &){ printf("Button 10\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 500, 600, 40, 40, [](SDL_Event &){ printf("Button 11\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 550, 600, 40, 40, [](SDL_Event &){ printf("Button 12\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 600, 600, 40, 40, [](SDL_Event &){ printf("Button 13\r\n"); }));
 }
 
 void cSynthControl::Run()

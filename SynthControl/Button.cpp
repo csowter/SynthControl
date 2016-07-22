@@ -31,27 +31,10 @@ cButton::~cButton()
 
 void cButton::Render(SDL_Renderer *renderer)
 {
+	if (!mVisible)
+		return;
 	SDL_Texture *texture = mPressed ? mPressedTexture : mUnpressedTexture;
 	SDL_RenderCopy(renderer, texture, NULL, &mBoundingRectangle);
-}
-
-void cButton::Render(SDL_Surface *surface)
-{
-	if(!mVisible)
-		return;
-
-	SDL_Rect Rect;
-	Rect.x = 0;
-	Rect.y = 0;
-	Rect.w = mBoundingRectangle.w;
-	Rect.h = mBoundingRectangle.h;
-
-	SDL_Surface *Surface = SDL_CreateRGBSurface(0, mBoundingRectangle.w, mBoundingRectangle.h,
-		32, 0xff000000, 0x00ff0000, 0x000000ff00, 0x000000ff);
-	uint32_t colour = 0xFF0000FF;
-	SDL_FillRect(Surface, &Rect, colour);
-	SDL_BlitSurface(Surface, &Rect, surface, &mBoundingRectangle);
-	SDL_FreeSurface(Surface);
 }
 
 void cButton::MouseDown(SDL_Event &e)
