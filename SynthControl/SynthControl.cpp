@@ -1,6 +1,7 @@
 #include "SynthControl.h"
 #include <cstdio>
 #include <algorithm>
+#include <random>
 #include "Button.h"
 
 cSynthControl::cSynthControl()
@@ -16,10 +17,28 @@ cSynthControl::cSynthControl()
 	mSurface = SDL_GetWindowSurface(mWindow);
 	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED);
 
-	mWidgets.push_back(new cButton(mRenderer, 0,0,25,25));
-	mWidgets.push_back(new cButton(mRenderer, 50,50,50,50));
+	CreateWidgets();
+
+//	CreateAudioDevice();
 
 	Run();
+}
+
+void cSynthControl::CreateWidgets()
+{
+	mWidgets.push_back(new cButton(mRenderer, 0, 600, 40, 40, [](SDL_Event &e){ printf("Button 1\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 50, 600, 40, 40, [](SDL_Event &e){ printf("Button 2\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 100, 600, 40, 40, [](SDL_Event &e){ printf("Button 3\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 150, 600, 40, 40, [](SDL_Event &e){ printf("Button 4\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 200, 600, 40, 40, [](SDL_Event &e){ printf("Button 5\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 250, 600, 40, 40, [](SDL_Event &e){ printf("Button 6\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 300, 600, 40, 40, [](SDL_Event &e){ printf("Button 7\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 350, 600, 40, 40, [](SDL_Event &e){ printf("Button 8\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 400, 600, 40, 40, [](SDL_Event &e){ printf("Button 9\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 450, 600, 40, 40, [](SDL_Event &e){ printf("Button 10\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 500, 600, 40, 40, [](SDL_Event &e){ printf("Button 11\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 550, 600, 40, 40, [](SDL_Event &e){ printf("Button 12\r\n"); }));
+	mWidgets.push_back(new cButton(mRenderer, 600, 600, 40, 40, [](SDL_Event &e){ printf("Button 13\r\n"); }));
 }
 
 void cSynthControl::Run()
@@ -32,6 +51,8 @@ void cSynthControl::Run()
 		RenderWidgets();
 
 		SDL_RenderPresent(mRenderer);
+
+		SDL_Delay(10);
 	}
 }
 
@@ -128,4 +149,42 @@ cSynthControl::~cSynthControl()
 {
 	SDL_DestroyRenderer(mRenderer);
 	SDL_DestroyWindow(mWindow);
+}
+
+static void audioCallback(void *userData, Uint8 *audioStream, int len)
+{
+	static int16_t mBuffer[256] = {};
+	static std::random_device mRandom;
+	printf("%d\r\n", len);
+
+	for(uint32_t i = 0; i < len; i++)
+	{
+		mBuffer[i] = mRandom();
+		mBuffer[i] -= (0xffff / 2);
+
+		((uint16_t *)audioStream)[i] = mBuffer[i];
+	}
+
+	SDL_MixAudio(audioStream, (Uint8 *)mBuffer, len, SDL_MIX_MAXVOLUME);
+
+}
+
+void cSynthControl::CreateAudioDevice()
+{
+	SDL_AudioSpec audioSpecDesired;
+	SDL_AudioSpec audioSpecActual;
+
+	audioSpecDesired.freq = 44100;
+	audioSpecDesired.format = AUDIO_S16;
+	audioSpecDesired.channels = 1;
+	audioSpecDesired.callback = audioCallback;
+	audioSpecDesired.userdata = 0;
+	audioSpecDesired.samples = 256;
+
+	SDL_AudioDeviceID device = SDL_OpenAudioDevice(NULL, 0, &audioSpecDesired, &audioSpecActual, SDL_AUDIO_ALLOW_ANY_CHANGE);
+	if(device == 0)
+	{
+		printf("Failed to open audio: %s\n", SDL_GetError());
+	}
+	SDL_PauseAudio(0);
 }

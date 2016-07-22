@@ -25,12 +25,15 @@ public:
 	~cSynthControl();
 	void Run();
 private:
+	void CreateWidgets();
 	void RenderWidgets();
 	void HandleEvents();
 	void KeyDown(SDL_Event &e);
 	void KeyUp(SDL_Event &e);
 	void MouseButtonDown(SDL_Event &e);
 	void MouseButtonUp(SDL_Event &e);
+
+	void CreateAudioDevice();
 };
 
 #endif
