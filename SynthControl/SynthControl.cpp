@@ -19,7 +19,7 @@ cSynthControl::cSynthControl()
 
 	CreateWidgets();
 
-//	CreateAudioDevice();
+	CreateAudioDevice();
 
 	Run();
 }
@@ -174,17 +174,24 @@ void cSynthControl::CreateAudioDevice()
 	SDL_AudioSpec audioSpecDesired;
 	SDL_AudioSpec audioSpecActual;
 
-	audioSpecDesired.freq = 44100;
+	audioSpecDesired.freq = 48000;
 	audioSpecDesired.format = AUDIO_S16;
-	audioSpecDesired.channels = 1;
+	audioSpecDesired.channels = 2;
 	audioSpecDesired.callback = audioCallback;
 	audioSpecDesired.userdata = 0;
 	audioSpecDesired.samples = 256;
 
-	SDL_AudioDeviceID device = SDL_OpenAudioDevice(NULL, 0, &audioSpecDesired, &audioSpecActual, SDL_AUDIO_ALLOW_ANY_CHANGE);
+	SDL_AudioDeviceID device = SDL_OpenAudioDevice(SDL_GetAudioDeviceName(0, 0), 0, &audioSpecDesired, &audioSpecActual, SDL_AUDIO_ALLOW_ANY_CHANGE);
+	int NumberOFDevices = SDL_GetNumAudioDevices(0);
+	for(int i = 0; i < NumberOFDevices; i++)
+	printf("Audio device %d: %s\r\n", i, SDL_GetAudioDeviceName(i, 0));
 	if(device == 0)
 	{
 		printf("Failed to open audio: %s\n", SDL_GetError());
+	}
+	else
+	{
+		printf("opened Audio device %d: %s", device, SDL_GetAudioDeviceName(device, 0));
 	}
 	SDL_PauseAudio(0);
 }
