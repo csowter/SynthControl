@@ -36,6 +36,7 @@ private:
 	void KeyUp(SDL_Event &e);
 	void MouseButtonDown(SDL_Event &e);
 	void MouseButtonUp(SDL_Event &e);
+	void MouseMove(SDL_Event &e);
 
 	void CreateAudioDevice();
 };

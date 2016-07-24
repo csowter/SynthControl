@@ -4,29 +4,30 @@
 cButton::cButton(SDL_Renderer *renderer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, void(*eventHandler)(SDL_Event &e))
 	: cWidget(x, y, width, height), mEventHandler(eventHandler)
 {
-	SDL_Surface *Surface = SDL_CreateRGBSurface(0, mBoundingRectangle.w, mBoundingRectangle.h,
-		32, 0xff000000, 0x00ff0000, 0x000000ff00, 0x000000ff);
-
-	mPressedTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, width, height);
-	mUnpressedTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC, width, height);
-
 	SDL_Rect Rect;
 	Rect.x = 0;
 	Rect.y = 0;
 	Rect.w = mBoundingRectangle.w;
 	Rect.h = mBoundingRectangle.h;
 
-	SDL_FillRect(Surface, &Rect, 0xFF0000FF);
-	mUnpressedTexture = SDL_CreateTextureFromSurface(renderer, Surface);
-	SDL_FillRect(Surface, &Rect, 0x00FF00FF);
-	mPressedTexture = SDL_CreateTextureFromSurface(renderer, Surface);
+	mUnpressedTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, width, height);
+	mPressedTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, width, height);
 
-	SDL_FreeSurface(Surface);
+	SDL_SetRenderTarget(renderer, mUnpressedTexture);
+	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+	SDL_RenderFillRect(renderer, &Rect);
+
+	SDL_SetRenderTarget(renderer, mPressedTexture);
+	SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+	SDL_RenderFillRect(renderer, &Rect);
+
+	SDL_SetRenderTarget(renderer, NULL);
 }
 
 cButton::~cButton()
 {
-
+	SDL_DestroyTexture(mPressedTexture);
+	SDL_DestroyTexture(mUnpressedTexture);
 }
 
 void cButton::Render(SDL_Renderer *renderer)

@@ -4,9 +4,12 @@
 #include <random>
 #include "Button.h"
 #include "Sinusoid.h"
+#include "Rotary.h"
 
 cSynthControl::cSynthControl()
 {
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 	mWindow = SDL_CreateWindow("Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, cSynthControl::WindowInitialWidth, cSynthControl::WindowInitialHeight, SDL_WINDOW_SHOWN);
 	
 	if(mWindow == NULL)
@@ -17,6 +20,7 @@ cSynthControl::cSynthControl()
 
 	mSurface = SDL_GetWindowSurface(mWindow);
 	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED);
+
 
 	CreateWidgets();
 
@@ -38,6 +42,10 @@ void cSynthControl::CreateWidgets()
 	mWidgets.push_back(new cButton(mRenderer, 500, 600, 40, 40, [](SDL_Event &){ printf("Button 11\r\n"); }));
 	mWidgets.push_back(new cButton(mRenderer, 550, 600, 40, 40, [](SDL_Event &){ printf("Button 12\r\n"); }));
 	mWidgets.push_back(new cButton(mRenderer, 600, 600, 40, 40, [](SDL_Event &){ printf("Button 13\r\n"); }));
+
+	mWidgets.push_back(new cRotary(mRenderer, 10, 10, 100));
+
+	mWidgets.push_back(new cRotary(mRenderer, 200,200, 100));
 }
 
 void cSynthControl::Run()
@@ -118,6 +126,11 @@ void cSynthControl::MouseButtonUp(SDL_Event &e)
 #endif
 }
 
+void cSynthControl::MouseMove(SDL_Event &e)
+{
+	std::for_each(mWidgets.begin(), mWidgets.end(), [&](cWidget *widget) { widget->MouseMove(e); });
+}
+
 void cSynthControl::HandleEvents()
 {
 	SDL_Event e;
@@ -139,6 +152,9 @@ void cSynthControl::HandleEvents()
 			break;
 		case SDL_MOUSEBUTTONUP:
 			MouseButtonUp(e);
+			break;
+		case SDL_MOUSEMOTION:
+			MouseMove(e);
 			break;
 		}
 	}

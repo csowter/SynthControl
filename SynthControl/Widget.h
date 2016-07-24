@@ -22,6 +22,7 @@ public:
 	
 	virtual void MouseDown(SDL_Event &e) = 0;
 	virtual void MouseUp(SDL_Event &e) = 0;
+	virtual void MouseMove(SDL_Event &e) {};
 
 	virtual void Render(SDL_Renderer *renderer) = 0;
 };
