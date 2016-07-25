@@ -1,7 +1,7 @@
 #ifndef audiocore_h
 #define audiocore_h
 
-#include "Sinusoid.h"
+#include "Oscillator.h"
 #include <SDL.h>
 
 class cAudioCore
@@ -11,7 +11,7 @@ public:
 	~cAudioCore();
 	void cAudioCore::MuteOscillators(bool mute, int oscillator);
 private:
-	Sinusoid mSine[12];
+	cOscillator mOscillators[12];
 	void OpenAudioDevice();
 };
 

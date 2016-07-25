@@ -23,9 +23,10 @@ cAudioCore::cAudioCore()
 {
 	for(uint32_t i = 0; i < 12; i++)
 	{
-		mSine[i].SetSampleRate(48000);
-		mSine[i].SetFrequency(pitch[i]);
-		mSine[i].SetMute(true);
+		mOscillators[i].SetType(cOscillator::eType::Sine);
+		mOscillators[i].SetSampleRate(48000);
+		mOscillators[i].SetFrequency(pitch[i]);
+		mOscillators[i].SetMute(true);
 	}
 	OpenAudioDevice();
 }
@@ -37,12 +38,12 @@ cAudioCore::~cAudioCore()
 
 void cAudioCore::MuteOscillators(bool mute, int oscillator)
 {
-	mSine[oscillator].SetMute(mute);
+	mOscillators[oscillator].SetMute(mute);
 }
 
 static void audioCallback(void *userData, Uint8 *audioStream, int len)
 {
-	Sinusoid *generator = (Sinusoid *)userData;
+	cOscillator *generator = (cOscillator *)userData;
 	float *floatStream = (float *)audioStream;
 	for (int i = 0; i < len / sizeof(float); i++)
 	{
@@ -63,7 +64,7 @@ void cAudioCore::OpenAudioDevice()
 	audioSpecDesired.format = AUDIO_F32;
 	audioSpecDesired.channels = 2;
 	audioSpecDesired.callback = audioCallback;
-	audioSpecDesired.userdata = &mSine;
+	audioSpecDesired.userdata = mOscillators;
 	audioSpecDesired.samples = 512;
 
 	SDL_AudioDeviceID device = SDL_OpenAudioDevice(NULL, 0, &audioSpecDesired, &audioSpecActual, SDL_AUDIO_ALLOW_ANY_CHANGE);
