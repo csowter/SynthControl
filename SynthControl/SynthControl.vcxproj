@@ -72,18 +72,22 @@
     <ClCompile Include="AudioCore.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Oscillator.cpp" />
     <ClCompile Include="Rotary.cpp" />
     <ClCompile Include="Sinusoid.cpp" />
     <ClCompile Include="SynthControl.cpp" />
+    <ClCompile Include="ToggleButton.cpp" />
     <ClCompile Include="Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioCore.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="MouseEventHandler.h" />
+    <ClInclude Include="Oscillator.h" />
     <ClInclude Include="Rotary.h" />
     <ClInclude Include="Sinusoid.h" />
     <ClInclude Include="SynthControl.h" />
+    <ClInclude Include="ToggleButton.h" />
     <ClInclude Include="Widget.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
