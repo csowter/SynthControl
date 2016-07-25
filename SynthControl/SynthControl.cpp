@@ -5,6 +5,7 @@
 #include "Button.h"
 #include "Sinusoid.h"
 #include "Rotary.h"
+#include "MouseEventHandler.h"
 
 cSynthControl::cSynthControl()
 {
@@ -21,31 +22,40 @@ cSynthControl::cSynthControl()
 	mSurface = SDL_GetWindowSurface(mWindow);
 	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED);
 
-
 	CreateWidgets();
 
 	Run();
 }
 
+class ButtonHandler : public iMouseEventHandler
+{
+private:
+	cAudioCore &mAudioCore;
+	bool mMute;
+	int mOscillator;
+public:
+	ButtonHandler(cAudioCore &audio, int oscillator)
+		: mAudioCore(audio), mMute(false), mOscillator(oscillator)
+	{}
+
+	void MouseDown(SDL_Event &e)
+	{
+		mAudioCore.MuteOscillators(mMute, mOscillator);
+		mMute = !mMute;
+	}
+};
+
 void cSynthControl::CreateWidgets()
 {
-	mWidgets.push_back(new cButton(mRenderer, 0, 600, 40, 40, [](SDL_Event &) {printf("Button 1\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 50, 600, 40, 40, [](SDL_Event &) {printf("Button 2\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 100, 600, 40, 40, [](SDL_Event &){ printf("Button 3\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 150, 600, 40, 40, [](SDL_Event &){ printf("Button 4\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 200, 600, 40, 40, [](SDL_Event &){ printf("Button 5\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 250, 600, 40, 40, [](SDL_Event &){ printf("Button 6\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 300, 600, 40, 40, [](SDL_Event &){ printf("Button 7\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 350, 600, 40, 40, [](SDL_Event &){ printf("Button 8\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 400, 600, 40, 40, [](SDL_Event &){ printf("Button 9\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 450, 600, 40, 40, [](SDL_Event &){ printf("Button 10\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 500, 600, 40, 40, [](SDL_Event &){ printf("Button 11\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 550, 600, 40, 40, [](SDL_Event &){ printf("Button 12\r\n"); }));
-	mWidgets.push_back(new cButton(mRenderer, 600, 600, 40, 40, [](SDL_Event &){ printf("Button 13\r\n"); }));
+	for(int i = 0; i < 12; i++)
+	{
+		cButton *muteButton = new cButton(mRenderer, i * 50, 600, 40, 40);
+		ButtonHandler *handler = new ButtonHandler(mAudioCore, i);
+		muteButton->AddEventHandler(handler);
+		mWidgets.push_back(muteButton);
 
-	mWidgets.push_back(new cRotary(mRenderer, 10, 10, 100));
-
-	mWidgets.push_back(new cRotary(mRenderer, 200,200, 100));
+		mWidgets.push_back(new cRotary(mRenderer, i * 50, 550, 40));
+	}
 }
 
 void cSynthControl::Run()

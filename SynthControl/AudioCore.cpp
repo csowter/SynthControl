@@ -2,9 +2,31 @@
 #include <SDL.h>
 #include <cstdio>
 
-cAudioCore::cAudioCore()
-	: mSine(1000.0f, 48000)
+
+float pitch[] =
 {
+	261.63f,
+	277.18f,
+	293.66f,
+	311.13f,
+	329.63f,
+	349.23f,
+	369.99f,
+	392.00f,
+	415.30f,
+	440.0f,
+	466.16f,
+	493.88f
+};
+
+cAudioCore::cAudioCore()
+{
+	for(uint32_t i = 0; i < 12; i++)
+	{
+		mSine[i].SetSampleRate(48000);
+		mSine[i].SetFrequency(pitch[i]);
+		mSine[i].SetMute(true);
+	}
 	OpenAudioDevice();
 }
 
@@ -13,13 +35,21 @@ cAudioCore::~cAudioCore()
 
 }
 
+void cAudioCore::MuteOscillators(bool mute, int oscillator)
+{
+	mSine[oscillator].SetMute(mute);
+}
+
 static void audioCallback(void *userData, Uint8 *audioStream, int len)
 {
 	Sinusoid *generator = (Sinusoid *)userData;
 	float *floatStream = (float *)audioStream;
 	for (int i = 0; i < len / sizeof(float); i++)
 	{
-		*floatStream = generator->NextSample() / 2;
+		float sample = 0.0f;
+		for(uint32_t i = 0; i < 12; i++)
+			sample += generator[i].NextSample();
+		*floatStream = sample / 20;
 		floatStream++;
 	}
 }

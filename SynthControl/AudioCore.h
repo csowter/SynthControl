@@ -9,9 +9,9 @@ class cAudioCore
 public:
 	cAudioCore();
 	~cAudioCore();
-
+	void cAudioCore::MuteOscillators(bool mute, int oscillator);
 private:
-	Sinusoid mSine;
+	Sinusoid mSine[12];
 	void OpenAudioDevice();
 };
 

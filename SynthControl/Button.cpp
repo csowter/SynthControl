@@ -1,8 +1,9 @@
 #include "Button.h"
 #include <cstdio>
+#include <algorithm>
 
-cButton::cButton(SDL_Renderer *renderer, uint32_t x, uint32_t y, uint32_t width, uint32_t height, void(*eventHandler)(SDL_Event &e))
-	: cWidget(x, y, width, height), mEventHandler(eventHandler)
+cButton::cButton(SDL_Renderer *renderer, uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+	: cWidget(x, y, width, height)
 {
 	SDL_Rect Rect;
 	Rect.x = 0;
@@ -46,12 +47,13 @@ void cButton::MouseDown(SDL_Event &e)
 	if(ContainsPoint(x, y))
 	{
 		mPressed = true;
-		mEventHandler(e);
+		std::for_each(mEventHandlers.begin(), mEventHandlers.end(), [&](iMouseEventHandler *handler){handler->MouseDown(e); });
 	}
 }
 
-void cButton::MouseUp(SDL_Event &)
+void cButton::MouseUp(SDL_Event &e)
 {
 	mPressed = false;
+	std::for_each(mEventHandlers.begin(), mEventHandlers.end(), [&](iMouseEventHandler *handler){handler->MouseUp(e); });
 }
 

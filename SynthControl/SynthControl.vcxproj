@@ -69,13 +69,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AudioCore.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Rotary.cpp" />
+    <ClCompile Include="Sinusoid.cpp" />
     <ClCompile Include="SynthControl.cpp" />
     <ClCompile Include="Widget.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AudioCore.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="MouseEventHandler.h" />
+    <ClInclude Include="Rotary.h" />
+    <ClInclude Include="Sinusoid.h" />
     <ClInclude Include="SynthControl.h" />
     <ClInclude Include="Widget.h" />
   </ItemGroup>
