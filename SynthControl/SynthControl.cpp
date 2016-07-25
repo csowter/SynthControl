@@ -2,7 +2,7 @@
 #include <cstdio>
 #include <algorithm>
 #include <random>
-#include "Button.h"
+#include "ToggleButton.h"
 #include "Sinusoid.h"
 #include "Rotary.h"
 #include "MouseEventHandler.h"
@@ -49,7 +49,7 @@ void cSynthControl::CreateWidgets()
 {
 	for(int i = 0; i < 12; i++)
 	{
-		cButton *muteButton = new cButton(mRenderer, i * 50, 600, 40, 40);
+		cButton *muteButton = new cToggleButton(mRenderer, i * 50, 600, 40, 40);
 		ButtonHandler *handler = new ButtonHandler(mAudioCore, i);
 		muteButton->AddEventHandler(handler);
 		mWidgets.push_back(muteButton);

@@ -4,10 +4,11 @@
 #include "Widget.h"
 #include "MouseEventHandler.h"
 #include <vector>
+#include <algorithm>
 
 class cButton : public cWidget
 {
-private:
+protected:
 	SDL_Texture *mPressedTexture;
 	SDL_Texture *mUnpressedTexture;
 	bool mPressed;
@@ -19,7 +20,7 @@ public:
 	virtual void MouseDown(SDL_Event &e);
 	virtual void MouseUp(SDL_Event &e);
 	void AddEventHandler(iMouseEventHandler *handler) { mEventHandlers.push_back(handler); }
-	void RemoveEventHandler(iMouseEventHandler *handler){}; 
+	void RemoveEventHandler(iMouseEventHandler *handler){ mEventHandlers.erase(std::remove(mEventHandlers.begin(), mEventHandlers.end(), handler), mEventHandlers.end()); };
 };
 
 #endif
