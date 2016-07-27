@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <random>
 #include "ToggleButton.h"
-#include "Sinusoid.h"
 #include "Rotary.h"
 #include "MouseEventHandler.h"
 
@@ -45,6 +44,22 @@ public:
 	}
 };
 
+class cSwitchOscillatorHandler : public iMouseEventHandler
+{
+private:
+	cAudioCore &mAudioCore;
+	int mOscillator;
+public:
+	cSwitchOscillatorHandler(cAudioCore &audio, int oscillator)
+		: mAudioCore(audio), mOscillator(oscillator)
+	{}
+
+	void MouseDown(SDL_Event &e)
+	{
+		mAudioCore.SwitchOscillator(mOscillator);
+	}
+};
+
 void cSynthControl::CreateWidgets()
 {
 	for(int i = 0; i < 12; i++)
@@ -53,6 +68,11 @@ void cSynthControl::CreateWidgets()
 		ButtonHandler *handler = new ButtonHandler(mAudioCore, i);
 		muteButton->AddEventHandler(handler);
 		mWidgets.push_back(muteButton);
+
+		cButton *oscillatorTypeButton = new cButton(mRenderer, i * 50, 500, 40, 40);
+		cSwitchOscillatorHandler *switchHandler = new cSwitchOscillatorHandler(mAudioCore, i);
+		oscillatorTypeButton->AddEventHandler(switchHandler);
+		mWidgets.push_back(oscillatorTypeButton);
 
 		mWidgets.push_back(new cRotary(mRenderer, i * 50, 550, 40));
 	}

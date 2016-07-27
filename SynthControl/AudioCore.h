@@ -1,7 +1,7 @@
 #ifndef audiocore_h
 #define audiocore_h
 
-#include "Oscillator.h"
+#include "Generator.h"
 #include <SDL.h>
 
 class cAudioCore
@@ -9,9 +9,11 @@ class cAudioCore
 public:
 	cAudioCore();
 	~cAudioCore();
-	void cAudioCore::MuteOscillators(bool mute, int oscillator);
+	void MuteOscillators(bool mute, int oscillator);
+	void SwitchOscillator(int oscillator);
 private:
-	cOscillator mOscillators[12];
+	bool mGeneratorType[12];
+	iGenerator *mGenerators[12];
 	void OpenAudioDevice();
 };
 

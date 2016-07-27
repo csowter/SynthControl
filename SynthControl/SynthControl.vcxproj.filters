@@ -33,13 +33,16 @@
     <ClCompile Include="Rotary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Sinusoid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ToggleButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Oscillator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SineGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SawGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -48,9 +51,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Rotary.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Sinusoid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Button.h">
@@ -69,6 +69,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Oscillator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Generator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SineGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SawGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

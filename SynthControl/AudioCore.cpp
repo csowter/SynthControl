@@ -1,6 +1,8 @@
 #include "AudioCore.h"
 #include <SDL.h>
 #include <cstdio>
+#include "SineGenerator.h"
+#include "SawGenerator.h"
 
 
 float pitch[] =
@@ -23,10 +25,12 @@ cAudioCore::cAudioCore()
 {
 	for(uint32_t i = 0; i < 12; i++)
 	{
-		mOscillators[i].SetType(cOscillator::eType::Sine);
-		mOscillators[i].SetSampleRate(48000);
-		mOscillators[i].SetFrequency(pitch[i]);
-		mOscillators[i].SetMute(true);
+		mGenerators[i] = new cSineGenerator();
+		mGenerators[i]->SetSampleRate(48000);
+		mGenerators[i]->SetFrequency(pitch[i]);
+		mGenerators[i]->SetMute(true);
+
+		mGeneratorType[i] = false;
 	}
 	OpenAudioDevice();
 }
@@ -36,20 +40,49 @@ cAudioCore::~cAudioCore()
 
 }
 
+void cAudioCore::SwitchOscillator(int oscillator)
+{
+	bool mute;
+	iGenerator *generator = mGenerators[oscillator];
+	mute = generator->GetMute();
+	mGenerators[oscillator] = nullptr;
+	delete generator;
+	
+	if(!mGeneratorType[oscillator])
+	{
+		generator = new cSawGenerator();
+	}
+	else
+	{
+		generator = new cSineGenerator();
+	}
+
+	generator->SetSampleRate(48000);
+	generator->SetFrequency(pitch[oscillator]);
+	generator->SetMute(mute);
+
+	mGenerators[oscillator] = generator;
+
+	mGeneratorType[oscillator] = !mGeneratorType[oscillator];
+}
+
 void cAudioCore::MuteOscillators(bool mute, int oscillator)
 {
-	mOscillators[oscillator].SetMute(mute);
+	mGenerators[oscillator]->SetMute(mute);
 }
 
 static void audioCallback(void *userData, Uint8 *audioStream, int len)
 {
-	cOscillator *generator = (cOscillator *)userData;
+	iGenerator **generator = (iGenerator **)userData;
 	float *floatStream = (float *)audioStream;
 	for (int i = 0; i < len / sizeof(float); i++)
 	{
 		float sample = 0.0f;
 		for(uint32_t i = 0; i < 12; i++)
-			sample += generator[i].NextSample();
+		{
+			if(generator[i] != nullptr)
+			sample += generator[i]->NextSample();
+		}
 		*floatStream = sample / 20;
 		floatStream++;
 	}
@@ -64,7 +97,7 @@ void cAudioCore::OpenAudioDevice()
 	audioSpecDesired.format = AUDIO_F32;
 	audioSpecDesired.channels = 2;
 	audioSpecDesired.callback = audioCallback;
-	audioSpecDesired.userdata = mOscillators;
+	audioSpecDesired.userdata = mGenerators;
 	audioSpecDesired.samples = 512;
 
 	SDL_AudioDeviceID device = SDL_OpenAudioDevice(NULL, 0, &audioSpecDesired, &audioSpecActual, SDL_AUDIO_ALLOW_ANY_CHANGE);

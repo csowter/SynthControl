@@ -42,6 +42,10 @@
     <IncludePath>.\include;$(IncludePath)</IncludePath>
     <LibraryPath>.\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>C:\Work\SynthControl\SynthControl\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Work\SynthControl\SynthControl\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
@@ -66,6 +70,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -74,7 +80,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Oscillator.cpp" />
     <ClCompile Include="Rotary.cpp" />
-    <ClCompile Include="Sinusoid.cpp" />
+    <ClCompile Include="SawGenerator.cpp" />
+    <ClCompile Include="SineGenerator.cpp" />
     <ClCompile Include="SynthControl.cpp" />
     <ClCompile Include="ToggleButton.cpp" />
     <ClCompile Include="Widget.cpp" />
@@ -82,10 +89,12 @@
   <ItemGroup>
     <ClInclude Include="AudioCore.h" />
     <ClInclude Include="Button.h" />
+    <ClInclude Include="Generator.h" />
     <ClInclude Include="MouseEventHandler.h" />
     <ClInclude Include="Oscillator.h" />
     <ClInclude Include="Rotary.h" />
-    <ClInclude Include="Sinusoid.h" />
+    <ClInclude Include="SawGenerator.h" />
+    <ClInclude Include="SineGenerator.h" />
     <ClInclude Include="SynthControl.h" />
     <ClInclude Include="ToggleButton.h" />
     <ClInclude Include="Widget.h" />
