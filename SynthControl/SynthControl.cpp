@@ -5,6 +5,7 @@
 #include "ToggleButton.h"
 #include "Rotary.h"
 #include "MouseEventHandler.h"
+#include "Fader.h"
 
 cSynthControl::cSynthControl()
 {
@@ -75,6 +76,8 @@ void cSynthControl::CreateWidgets()
 		mWidgets.push_back(oscillatorTypeButton);
 
 		mWidgets.push_back(new cRotary(mRenderer, i * 50, 550, 40));
+
+		mWidgets.push_back(new cFader(mRenderer, i * 50, 380, 40, 100));
 	}
 }
 
@@ -95,8 +98,8 @@ void cSynthControl::Run()
 
 void cSynthControl::RenderWidgets()
 {
-	SDL_Rect rect = { 0, 0, cSynthControl::WindowInitialWidth, cSynthControl::WindowInitialHeight };
-	SDL_FillRect(mSurface, &rect, 0x00000000);
+	SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
+	SDL_RenderClear(mRenderer);
 	std::for_each(mWidgets.begin(), mWidgets.end(), [this](cWidget *widget){ widget->Render(mRenderer); });
 }
 
