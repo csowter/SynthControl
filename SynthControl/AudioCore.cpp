@@ -22,6 +22,7 @@ float pitch[] =
 };
 
 cAudioCore::cAudioCore()
+	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 150), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150)
 {
 	for(uint32_t i = 0; i < 12; i++)
 	{
@@ -73,17 +74,20 @@ void cAudioCore::MuteOscillators(bool mute, int oscillator)
 
 static void audioCallback(void *userData, Uint8 *audioStream, int len)
 {
-	iGenerator **generator = (iGenerator **)userData;
+	cAudioCore *audioCore = (cAudioCore *)userData;//**generator = (iGenerator **)userData;
+	
 	float *floatStream = (float *)audioStream;
 	for (int i = 0; i < len / sizeof(float); i++)
 	{
 		float sample = 0.0f;
 		for(uint32_t i = 0; i < 12; i++)
 		{
-			if(generator[i] != nullptr)
-			sample += generator[i]->NextSample();
+			if(audioCore->mGenerators[i] != nullptr)
+				sample += audioCore->mGenerators[i]->NextSample();
 		}
-		*floatStream = sample / 20;
+		sample = audioCore->mBiquad.NextSample(sample);
+		//sample = audioCore->mBiquad1.NextSample(sample);
+		*floatStream = sample;// / 20;
 		floatStream++;
 	}
 }
@@ -97,7 +101,7 @@ void cAudioCore::OpenAudioDevice()
 	audioSpecDesired.format = AUDIO_F32;
 	audioSpecDesired.channels = 2;
 	audioSpecDesired.callback = audioCallback;
-	audioSpecDesired.userdata = mGenerators;
+	audioSpecDesired.userdata = this;
 	audioSpecDesired.samples = 512;
 
 	SDL_AudioDeviceID device = SDL_OpenAudioDevice(NULL, 0, &audioSpecDesired, &audioSpecActual, SDL_AUDIO_ALLOW_ANY_CHANGE);
