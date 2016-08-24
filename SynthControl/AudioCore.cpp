@@ -32,6 +32,8 @@ cAudioCore::cAudioCore()
 		mGenerators[i]->SetMute(true);
 
 		mGeneratorType[i] = false;
+
+		mGain[i] = 0.0f;
 	}
 	OpenAudioDevice();
 }
@@ -72,6 +74,11 @@ void cAudioCore::MuteOscillators(bool mute, int oscillator)
 	mGenerators[oscillator]->SetMute(mute);
 }
 
+void cAudioCore::SetGain(int oscillator, float gain)
+{
+	mGain[oscillator] = gain;
+}
+
 static void audioCallback(void *userData, Uint8 *audioStream, int len)
 {
 	cAudioCore *audioCore = (cAudioCore *)userData;//**generator = (iGenerator **)userData;
@@ -83,7 +90,7 @@ static void audioCallback(void *userData, Uint8 *audioStream, int len)
 		for(uint32_t i = 0; i < 12; i++)
 		{
 			if(audioCore->mGenerators[i] != nullptr)
-				sample += audioCore->mGenerators[i]->NextSample();
+				sample += (audioCore->mGenerators[i]->NextSample() * audioCore->mGain[i]);
 		}
 		sample = audioCore->mBiquad.NextSample(sample);
 		//sample = audioCore->mBiquad1.NextSample(sample);

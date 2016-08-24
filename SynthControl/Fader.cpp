@@ -1,7 +1,8 @@
 #include "Fader.h"
+#include <algorithm>
 
 cFader::cFader(SDL_Renderer *renderer, uint32_t x, uint32_t y, uint32_t width, uint32_t height)
-	: cWidget(x, y, width, height), mValue(0)
+	: cWidget(x, y, width, height), mValue(0.0f), mMinValue(0.0f), mMaxValue(1.0f), mStep(0.01f)
 {
 	mFaderTrackTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, width, height);
 	mFaderKnobTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_TARGET, width, 2);
@@ -56,10 +57,12 @@ void cFader::MouseMove(SDL_Event &e)
 	mMouseX = x;
 	mMouseY = y;
 
-	mValue += delta;
+	mValue += delta * mStep;
 
-	if(mValue > 100) mValue = 100;
-	if(mValue < 0) mValue = 0;
+	if(mValue > mMaxValue) mValue = mMaxValue;
+	if(mValue < mMinValue) mValue = mMinValue;
+
+	std::for_each(mValueChangeHandlers.begin(), mValueChangeHandlers.end(), [&](iValueChangeHandler *handler) {handler->ValueChange(mValue); });
 }
 
 void cFader::Render(SDL_Renderer *renderer)
@@ -68,7 +71,11 @@ void cFader::Render(SDL_Renderer *renderer)
 		return;
 	SDL_RenderCopy(renderer, mFaderTrackTexture, NULL, &mBoundingRectangle);
 
-	SDL_Rect knobRect = { mBoundingRectangle.x, mBoundingRectangle.y + (100-mValue), mBoundingRectangle.w, 2 };
+	SDL_Rect knobRect = { mBoundingRectangle.x, mBoundingRectangle.y + (mBoundingRectangle.h - (int)(mValue / mStep)), mBoundingRectangle.w, 2 };
 	SDL_RenderCopy(renderer, mFaderKnobTexture, NULL, &knobRect);
-	
+}
+
+void cFader::AddValueChangeHandler(iValueChangeHandler *handler)
+{
+	mValueChangeHandlers.push_back(handler);
 }

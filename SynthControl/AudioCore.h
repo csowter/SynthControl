@@ -12,9 +12,11 @@ public:
 	~cAudioCore();
 	void MuteOscillators(bool mute, int oscillator);
 	void SwitchOscillator(int oscillator);
+	void SetGain(int oscillator, float gain);
 
 	bool mGeneratorType[12];
 	iGenerator *mGenerators[12];
+	float mGain[12];
 	cBiquad mBiquad;
 	cBiquad mBiquad1;
 private:

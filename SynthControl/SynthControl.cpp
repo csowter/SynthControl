@@ -6,6 +6,7 @@
 #include "Rotary.h"
 #include "MouseEventHandler.h"
 #include "Fader.h"
+#include "ValueChangeHandler.h"
 
 cSynthControl::cSynthControl()
 {
@@ -61,6 +62,22 @@ public:
 	}
 };
 
+class cFaderHandler : public iValueChangeHandler
+{
+private:
+	cAudioCore &mAudioCore;
+	int mOscillator;
+public:
+	cFaderHandler(cAudioCore &audio, int oscillator)
+		: mAudioCore(audio), mOscillator(oscillator)
+	{}
+
+	void ValueChange(float newValue)
+	{
+		mAudioCore.SetGain(mOscillator, newValue);
+	}
+};
+
 void cSynthControl::CreateWidgets()
 {
 	for(int i = 0; i < 12; i++)
@@ -76,8 +93,10 @@ void cSynthControl::CreateWidgets()
 		mWidgets.push_back(oscillatorTypeButton);
 
 		mWidgets.push_back(new cRotary(mRenderer, i * 50, 550, 40));
-
-		mWidgets.push_back(new cFader(mRenderer, i * 50, 380, 40, 100));
+		
+		cFader *fader = new cFader(mRenderer, i * 50, 380, 40, 100);
+		fader->AddValueChangeHandler(new cFaderHandler(mAudioCore, i));
+		mWidgets.push_back(fader);
 	}
 }
 
