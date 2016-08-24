@@ -22,7 +22,7 @@ float pitch[] =
 };
 
 cAudioCore::cAudioCore()
-	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 150), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150)
+	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150)
 {
 	for(uint32_t i = 0; i < 12; i++)
 	{
@@ -84,7 +84,7 @@ static void audioCallback(void *userData, Uint8 *audioStream, int len)
 	cAudioCore *audioCore = (cAudioCore *)userData;//**generator = (iGenerator **)userData;
 	
 	float *floatStream = (float *)audioStream;
-	for (int i = 0; i < len / sizeof(float); i++)
+	for (int i = 0; i <( len / sizeof(float)) / 2; i++)
 	{
 		float sample = 0.0f;
 		for(uint32_t i = 0; i < 12; i++)
@@ -93,8 +93,9 @@ static void audioCallback(void *userData, Uint8 *audioStream, int len)
 				sample += (audioCore->mGenerators[i]->NextSample() * audioCore->mGain[i]);
 		}
 		sample = audioCore->mBiquad.NextSample(sample);
-		//sample = audioCore->mBiquad1.NextSample(sample);
 		*floatStream = sample;// / 20;
+		floatStream++;
+		*floatStream = sample;
 		floatStream++;
 	}
 }
