@@ -87,7 +87,7 @@ void cSynthControl::CreateWidgets()
 		muteButton->AddEventHandler(handler);
 		mWidgets.push_back(muteButton);
 
-		cButton *oscillatorTypeButton = new cButton(mRenderer, i * 50, 500, 40, 40);
+		cButton *oscillatorTypeButton = new cToggleButton(mRenderer, i * 50, 500, 40, 40);
 		cSwitchOscillatorHandler *switchHandler = new cSwitchOscillatorHandler(mAudioCore, i);
 		oscillatorTypeButton->AddEventHandler(switchHandler);
 		mWidgets.push_back(oscillatorTypeButton);
