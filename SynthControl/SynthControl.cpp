@@ -7,6 +7,7 @@
 #include "MouseEventHandler.h"
 #include "Fader.h"
 #include "ValueChangeHandler.h"
+#include "Meter.h"
 
 cSynthControl::cSynthControl()
 {
@@ -98,6 +99,8 @@ void cSynthControl::CreateWidgets()
 		fader->AddValueChangeHandler(new cFaderHandler(mAudioCore, i));
 		mWidgets.push_back(fader);
 	}
+	mWidgets.push_back(new cMeter(mRenderer, mAudioCore, 10, 10, 8, 150));
+	mWidgets.push_back(new cMeter(mRenderer, mAudioCore, 20, 10, 8, 150));
 }
 
 void cSynthControl::Run()

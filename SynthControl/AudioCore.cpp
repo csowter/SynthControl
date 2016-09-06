@@ -81,7 +81,7 @@ void cAudioCore::SetGain(int oscillator, float gain)
 
 static void audioCallback(void *userData, Uint8 *audioStream, int len)
 {
-	cAudioCore *audioCore = (cAudioCore *)userData;//**generator = (iGenerator **)userData;
+	cAudioCore *audioCore = (cAudioCore *)userData;
 	
 	float *floatStream = (float *)audioStream;
 	for (int i = 0; i <( len / sizeof(float)) / 2; i++)
@@ -90,13 +90,16 @@ static void audioCallback(void *userData, Uint8 *audioStream, int len)
 		for(uint32_t i = 0; i < 12; i++)
 		{
 			if(audioCore->mGenerators[i] != nullptr)
-				sample += (audioCore->mGenerators[i]->NextSample() * audioCore->mGain[i]);
+				sample += ((audioCore->mGenerators[i]->NextSample() * audioCore->mGain[i]) / 4);
 		}
-		sample = audioCore->mBiquad.NextSample(sample);
-		*floatStream = sample;// / 20;
-		floatStream++;
+		
+		//sample = audioCore->mBiquad.NextSample(sample);
 		*floatStream = sample;
 		floatStream++;
+		audioCore->mLeftMeterValue = fabs(sample);
+		*floatStream = sample;
+		floatStream++;
+		audioCore->mRightMeterValue = fabs(sample);
 	}
 }
 

@@ -19,6 +19,12 @@ public:
 	float mGain[12];
 	cBiquad mBiquad;
 	cBiquad mBiquad1;
+
+	float GetLeftMeterValue() const { return mLeftMeterValue; }
+	float GetRightMeterValue() const { return mRightMeterValue;	}
+
+	float mLeftMeterValue;
+	float mRightMeterValue;
 private:
 	
 	void OpenAudioDevice();

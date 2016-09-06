@@ -81,6 +81,7 @@
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Fader.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Meter.cpp" />
     <ClCompile Include="Oscillator.cpp" />
     <ClCompile Include="Rotary.cpp" />
     <ClCompile Include="SawGenerator.cpp" />
@@ -95,6 +96,7 @@
     <ClInclude Include="Button.h" />
     <ClInclude Include="Fader.h" />
     <ClInclude Include="Generator.h" />
+    <ClInclude Include="Meter.h" />
     <ClInclude Include="MouseEventHandler.h" />
     <ClInclude Include="Oscillator.h" />
     <ClInclude Include="Rotary.h" />
