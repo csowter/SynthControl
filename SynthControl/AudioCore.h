@@ -17,8 +17,11 @@ public:
 	bool mGeneratorType[12];
 	iGenerator *mGenerators[12];
 	float mGain[12];
+	float mTargetGain[12];
 	cBiquad mBiquad;
 	cBiquad mBiquad1;
+
+	float NextSample();
 
 	float GetLeftMeterValue() const { return mLeftMeterValue; }
 	float GetRightMeterValue() const { return mRightMeterValue;	}

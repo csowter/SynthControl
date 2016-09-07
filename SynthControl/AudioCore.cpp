@@ -40,7 +40,11 @@ cAudioCore::cAudioCore()
 
 cAudioCore::~cAudioCore()
 {
-
+	for (uint32_t i = 0; i < 12; i++)
+	{
+		delete mGenerators[i];
+		mGenerators[i] = nullptr;
+	}
 }
 
 void cAudioCore::SwitchOscillator(int oscillator)
@@ -76,7 +80,7 @@ void cAudioCore::MuteOscillators(bool mute, int oscillator)
 
 void cAudioCore::SetGain(int oscillator, float gain)
 {
-	mGain[oscillator] = gain;
+	mTargetGain[oscillator] = gain;
 }
 
 static void audioCallback(void *userData, Uint8 *audioStream, int len)
@@ -86,14 +90,7 @@ static void audioCallback(void *userData, Uint8 *audioStream, int len)
 	float *floatStream = (float *)audioStream;
 	for (int i = 0; i <( len / sizeof(float)) / 2; i++)
 	{
-		float sample = 0.0f;
-		for(uint32_t i = 0; i < 12; i++)
-		{
-			if(audioCore->mGenerators[i] != nullptr)
-				sample += ((audioCore->mGenerators[i]->NextSample() * audioCore->mGain[i]) / 4);
-		}
-		
-		//sample = audioCore->mBiquad.NextSample(sample);
+		float sample = audioCore->NextSample();
 		*floatStream = sample;
 		floatStream++;
 		audioCore->mLeftMeterValue = fabs(sample);
@@ -101,6 +98,23 @@ static void audioCallback(void *userData, Uint8 *audioStream, int len)
 		floatStream++;
 		audioCore->mRightMeterValue = fabs(sample);
 	}
+}
+
+float cAudioCore::NextSample()
+{
+	float sample = 0.0f;
+	for (uint32_t i = 0; i < 12; i++)
+	{
+		if (mGain[i] < mTargetGain[i])
+			mGain[i] += 0.0002f;
+		else if (mGain[i] > mTargetGain[i])
+			mGain[i] -= 0.0002f;
+
+		if (mGenerators[i] != nullptr)
+			sample += ((mGenerators[i]->NextSample() * mGain[i]));
+	}
+
+	return sample;
 }
 
 void cAudioCore::OpenAudioDevice()

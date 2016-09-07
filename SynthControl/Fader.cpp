@@ -2,7 +2,7 @@
 #include <algorithm>
 
 cFader::cFader(SDL_Renderer *renderer, uint32_t x, uint32_t y, uint32_t width, uint32_t height)
-	: cWidget(x, y, width, height), mValue(0.0f), mMinValue(0.0f), mMaxValue(1.0f), mStep(0.01f)
+	: cWidget(x, y, width, height), mValue(0.25f), mMinValue(0.0f), mMaxValue(1.0f), mStep(0.01f)
 {
 	mFaderTrackTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET, width, height);
 	mFaderKnobTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888, SDL_TEXTUREACCESS_TARGET, width, 2);
@@ -78,4 +78,5 @@ void cFader::Render(SDL_Renderer *renderer)
 void cFader::AddValueChangeHandler(iValueChangeHandler *handler)
 {
 	mValueChangeHandlers.push_back(handler);
+	handler->ValueChange(mValue);
 }
