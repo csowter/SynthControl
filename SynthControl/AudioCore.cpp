@@ -29,11 +29,11 @@ cAudioCore::cAudioCore()
 		mGenerators[i] = new cSineGenerator();
 		mGenerators[i]->SetSampleRate(48000);
 		mGenerators[i]->SetFrequency(pitch[i]);
-		mGenerators[i]->SetMute(true);
-
+		
 		mGeneratorType[i] = false;
 
 		mGain[i] = 0.0f;
+		mMute[i] = true;
 	}
 	OpenAudioDevice();
 }
@@ -51,7 +51,6 @@ void cAudioCore::SwitchOscillator(int oscillator)
 {
 	bool mute;
 	iGenerator *generator = mGenerators[oscillator];
-	mute = generator->GetMute();
 	mGenerators[oscillator] = nullptr;
 	delete generator;
 	
@@ -66,7 +65,6 @@ void cAudioCore::SwitchOscillator(int oscillator)
 
 	generator->SetSampleRate(48000);
 	generator->SetFrequency(pitch[oscillator]);
-	generator->SetMute(mute);
 
 	mGenerators[oscillator] = generator;
 
@@ -75,7 +73,7 @@ void cAudioCore::SwitchOscillator(int oscillator)
 
 void cAudioCore::MuteOscillators(bool mute, int oscillator)
 {
-	mGenerators[oscillator]->SetMute(mute);
+	mMute[oscillator] = mute;
 }
 
 void cAudioCore::SetGain(int oscillator, float gain)
@@ -105,10 +103,18 @@ float cAudioCore::NextSample()
 	float sample = 0.0f;
 	for (uint32_t i = 0; i < 12; i++)
 	{
-		if (mGain[i] < mTargetGain[i])
-			mGain[i] += 0.0002f;
-		else if (mGain[i] > mTargetGain[i])
-			mGain[i] -= 0.0002f;
+		if (!mMute[i])
+		{
+			if (mGain[i] < mTargetGain[i])
+				mGain[i] += 0.0002f;
+			else if (mGain[i] > mTargetGain[i])
+				mGain[i] -= 0.0002f;
+		}
+		else
+		{
+			if (mGain[i] > 0.0f)
+				mGain[i] -= 0.0002f;
+		}
 
 		if (mGenerators[i] != nullptr)
 			sample += ((mGenerators[i]->NextSample() * mGain[i]));

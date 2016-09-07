@@ -16,6 +16,9 @@ public:
 
 	bool mGeneratorType[12];
 	iGenerator *mGenerators[12];
+
+	bool mMute[12];
+
 	float mGain[12];
 	float mTargetGain[12];
 	cBiquad mBiquad;

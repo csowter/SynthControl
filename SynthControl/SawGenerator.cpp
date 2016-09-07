@@ -19,16 +19,8 @@ void cSawGenerator::SetSampleRate(uint32_t sampleRate)
 	CalculateIncrement();
 }
 
-void cSawGenerator::SetMute(bool mute)
-{
-	mMute = mute;
-}
-
 float cSawGenerator::NextSample()
 {
-	if (mMute)
-		return 0.0f;
-
 	if(mSum >= 0.9f)
 		mSum = -0.9f;
 	mSum += mIncrement;

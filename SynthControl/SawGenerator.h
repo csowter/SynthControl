@@ -10,7 +10,6 @@ private:
 	float mFrequency;
 	float mSum;
 	float mIncrement;
-	bool mMute;
 
 	void CalculateIncrement();
 public:
@@ -18,8 +17,6 @@ public:
 	virtual float NextSample();
 	virtual void SetSampleRate(uint32_t sampleRate);
 	virtual void SetFrequency(float frequency);
-	virtual void SetMute(bool mute);
-	virtual bool GetMute(){ return mMute; }
 };
 
 

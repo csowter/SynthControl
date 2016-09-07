@@ -20,15 +20,8 @@ void cSineGenerator::SetSampleRate(uint32_t sampleRate)
 	CalculateIncrement();
 }
 
-void cSineGenerator::SetMute(bool mute)
-{
-	mMute = mute;
-}
-
 float cSineGenerator::NextSample()
 {
-	if (mMute)
-		return 0.0f;
 	mSum = mSum + mIncrement;
 	float sample = sin(mSum);
 	
