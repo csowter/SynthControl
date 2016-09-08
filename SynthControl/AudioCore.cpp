@@ -23,7 +23,7 @@ float pitch[] =
 };
 
 cAudioCore::cAudioCore()
-	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150), mDelay(12000), mMeterIndex(0)
+	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150), mDelay(12000), mMeterIndex(0), mPan(0.5f)
 {
 	for(uint32_t i = 0; i < 12; i++)
 	{
@@ -90,17 +90,15 @@ static void audioCallback(void *userData, Uint8 *audioStream, int len)
 	float *floatStream = (float *)audioStream;
 	for (int i = 0; i <( len / sizeof(float)) / 2; i++)
 	{
-		float sample = audioCore->NextSample();
-		*floatStream = sample;
+		cAudioCore::sSample sample = audioCore->NextSample();
+		*floatStream = sample.left;
 		floatStream++;
-		audioCore->mLeftMeterValue = fabs(sample);
-		*floatStream = sample;
+		*floatStream = sample.right;
 		floatStream++;
-		audioCore->mRightMeterValue = fabs(sample);
 	}
 }
 
-float cAudioCore::NextSample()
+cAudioCore::sSample cAudioCore::NextSample()
 {
 	float sample = 0.0f;
 	for (uint32_t i = 0; i < 12; i++)
@@ -127,11 +125,17 @@ float cAudioCore::NextSample()
 	sample += (DelaySample * 0.25);
 
 	mDelay.WriteSample(sample);
+	
+	sSample stereoSample;
+	stereoSample.left = sample * sqrtf(1.0f - mPan);
+	stereoSample.right = sample * sqrtf(mPan);
 
-	mMeterBuffer[mMeterIndex++] = sample;
+	mMeterBuffer[0][mMeterIndex] = stereoSample.left;
+	mMeterBuffer[1][mMeterIndex] = stereoSample.right;
+	mMeterIndex++;
 	mMeterIndex &= (MeterBufferLength - 1);
 
-	return sample;
+	return stereoSample;
 }
 
 void cAudioCore::OpenAudioDevice()
@@ -161,12 +165,12 @@ void cAudioCore::OpenAudioDevice()
 	SDL_PauseAudioDevice(device, 0);
 }
 
-float cAudioCore::GetLeftMeterValue() const
+float cAudioCore::GetMeterValue(int meter) const
 {
 	float sum = 0.0f;
 	for (uint32_t i = 0; i < MeterBufferLength; i++)
 	{
-		sum += mMeterBuffer[i] * mMeterBuffer[i];
+		sum += mMeterBuffer[meter][i] * mMeterBuffer[meter][i];
 	}
 
 	sum /= MeterBufferLength;

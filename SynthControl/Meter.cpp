@@ -1,7 +1,7 @@
 #include "Meter.h"
 
-cMeter::cMeter(SDL_Renderer *renderer, cAudioCore &audioCore, uint32_t x, uint32_t y, uint32_t width, uint32_t height)
-: cWidget(x, y, width, height), mAudioCore(audioCore)
+cMeter::cMeter(SDL_Renderer *renderer, cAudioCore &audioCore, uint32_t meterIndex, uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+: cWidget(x, y, width, height), mAudioCore(audioCore), mMeterIndex(meterIndex)
 {
 	CreateTextures(renderer);
 }
@@ -33,7 +33,7 @@ void cMeter::Render(SDL_Renderer *renderer)
 	if (!mVisible)
 		return;
 
-	float newMeterValue = mAudioCore.GetLeftMeterValue();
+	float newMeterValue = mAudioCore.GetMeterValue(mMeterIndex);
 
 	mMeterValue = newMeterValue;
 

@@ -15,10 +15,11 @@ private:
 	void CreateTextures(SDL_Renderer *renderer);
 
 	float mMeterValue;
+	uint32_t mMeterIndex;
 
 public:
 	cMeter() = delete;
-	cMeter(SDL_Renderer *renderer, cAudioCore &audioCore, uint32_t x, uint32_t y, uint32_t width, uint32_t height);
+	cMeter(SDL_Renderer *renderer, cAudioCore &audioCore, uint32_t meterIndex, uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 	~cMeter();
 	virtual void MouseDown(SDL_Event &e){}
 	virtual void MouseUp(SDL_Event &e) {}
