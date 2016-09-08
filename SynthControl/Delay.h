@@ -11,13 +11,16 @@ private:
 	uint32_t mOutPosition;
 	float *mDelayBuffer;
 
+	void ZeroBuffer();
+
 public:
-	cDelay() = delete;
+	cDelay();
 	cDelay(uint32_t delayLength);
 	~cDelay();
 
 	float ReadSample();
 	void WriteSample(float sampleIn);
+	void SetDelayLength(uint32_t size);
 };
 
 #endif

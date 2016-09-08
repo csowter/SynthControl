@@ -23,8 +23,10 @@ float pitch[] =
 };
 
 cAudioCore::cAudioCore()
-	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150), mDelay(12000), mMeterIndex(0), mPan(0.5f)
+	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150), mMeterIndex(0), mPan(0.5f)
 {
+	mDelay[0].SetDelayLength(12000);
+	mDelay[1].SetDelayLength(12000);
 	for(uint32_t i = 0; i < 12; i++)
 	{
 		mGenerators[i] = new cSineGenerator();
@@ -41,6 +43,8 @@ cAudioCore::cAudioCore()
 
 cAudioCore::~cAudioCore()
 {
+	SDL_PauseAudioDevice(mAudioDevice, 1);
+	SDL_CloseAudioDevice(mAudioDevice);
 	for (uint32_t i = 0; i < 12; i++)
 	{
 		iGenerator *generator = mGenerators[i];
@@ -119,16 +123,19 @@ cAudioCore::sSample cAudioCore::NextSample()
 		if (mGenerators[i] != nullptr)
 			sample += ((mGenerators[i]->NextSample() * mGain[i]));
 	}
-
-	float DelaySample = mDelay.ReadSample();
-
-	sample += (DelaySample * 0.25);
-
-	mDelay.WriteSample(sample);
-	
+		
 	sSample stereoSample;
-	stereoSample.left = sample * sqrtf(1.0f - mPan);
-	stereoSample.right = sample * sqrtf(mPan);
+	stereoSample.left = sample;
+	stereoSample.right = sample;
+
+	stereoSample.left += (mDelay[0].ReadSample() * 0.25);
+	stereoSample.right += (mDelay[1].ReadSample() * 0.25);
+
+	stereoSample.left = stereoSample.left * sqrtf(1.0f - mPan);
+	stereoSample.right = stereoSample.right * sqrtf(mPan);
+
+	mDelay[0].WriteSample(stereoSample.left);
+	mDelay[1].WriteSample(stereoSample.right);
 
 	mMeterBuffer[0][mMeterIndex] = stereoSample.left;
 	mMeterBuffer[1][mMeterIndex] = stereoSample.right;
@@ -150,19 +157,19 @@ void cAudioCore::OpenAudioDevice()
 	audioSpecDesired.userdata = this;
 	audioSpecDesired.samples = 512;
 
-	SDL_AudioDeviceID device = SDL_OpenAudioDevice(NULL, 0, &audioSpecDesired, &audioSpecActual, SDL_AUDIO_ALLOW_ANY_CHANGE);
+	mAudioDevice = SDL_OpenAudioDevice(NULL, 0, &audioSpecDesired, &audioSpecActual, SDL_AUDIO_ALLOW_ANY_CHANGE);
 	int NumberOFDevices = SDL_GetNumAudioDevices(0);
 	for (int i = 0; i < NumberOFDevices; i++)
 		printf("Audio device %d: %s\r\n", i, SDL_GetAudioDeviceName(i, 0));
-	if (device == 0)
+	if (mAudioDevice == 0)
 	{
 		printf("Failed to open audio: %s\n", SDL_GetError());
 	}
 	else
 	{
-		printf("opened Audio device %d: %s", device, SDL_GetAudioDeviceName(device, 0));
+		printf("opened Audio device %d: %s", mAudioDevice, SDL_GetAudioDeviceName(mAudioDevice, 0));
 	}
-	SDL_PauseAudioDevice(device, 0);
+	SDL_PauseAudioDevice(mAudioDevice, 0);
 }
 
 float cAudioCore::GetMeterValue(int meter) const

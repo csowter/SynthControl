@@ -31,13 +31,14 @@ public:
 	float mPan;
 	cBiquad mBiquad;
 	cBiquad mBiquad1;
-	cDelay mDelay;
+	cDelay mDelay[2];
 
 	sSample NextSample();
 
 	float GetMeterValue(int meter) const;
 
 private:
+	SDL_AudioDeviceID mAudioDevice;
 	static const int MeterBufferLength = 2048;
 	float mMeterBuffer[2][MeterBufferLength];
 	uint32_t mMeterIndex;
