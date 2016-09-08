@@ -1,6 +1,7 @@
 #include "AudioCore.h"
 #include <SDL.h>
 #include <cstdio>
+#include <cmath>
 #include "SineGenerator.h"
 #include "SawGenerator.h"
 
@@ -22,7 +23,7 @@ float pitch[] =
 };
 
 cAudioCore::cAudioCore()
-	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150)
+	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150), mDelay(12000)
 {
 	for(uint32_t i = 0; i < 12; i++)
 	{
@@ -42,8 +43,9 @@ cAudioCore::~cAudioCore()
 {
 	for (uint32_t i = 0; i < 12; i++)
 	{
-		delete mGenerators[i];
+		iGenerator *generator = mGenerators[i];
 		mGenerators[i] = nullptr;
+		delete generator;
 	}
 }
 
@@ -119,6 +121,12 @@ float cAudioCore::NextSample()
 		if (mGenerators[i] != nullptr)
 			sample += ((mGenerators[i]->NextSample() * mGain[i]));
 	}
+
+	float DelaySample = mDelay.ReadSample();
+
+	sample += (DelaySample * 0.25);
+
+	mDelay.WriteSample(sample);
 
 	return sample;
 }

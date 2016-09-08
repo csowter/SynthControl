@@ -4,6 +4,7 @@
 #include "Generator.h"
 #include <SDL.h>
 #include "Biquad.h"
+#include "Delay.h"
 
 class cAudioCore
 {
@@ -23,6 +24,7 @@ public:
 	float mTargetGain[12];
 	cBiquad mBiquad;
 	cBiquad mBiquad1;
+	cDelay mDelay;
 
 	float NextSample();
 

@@ -54,6 +54,9 @@
     <ClCompile Include="Meter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Delay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AudioCore.h">
@@ -99,6 +102,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Meter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Delay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
