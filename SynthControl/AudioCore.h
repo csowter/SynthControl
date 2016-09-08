@@ -39,7 +39,7 @@ public:
 
 private:
 	SDL_AudioDeviceID mAudioDevice;
-	static const int MeterBufferLength = 2048;
+	static const int MeterBufferLength = 4096;
 	float mMeterBuffer[2][MeterBufferLength];
 	uint32_t mMeterIndex;
 	void OpenAudioDevice();

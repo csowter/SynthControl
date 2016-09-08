@@ -177,7 +177,7 @@ float cAudioCore::GetMeterValue(int meter) const
 	float sum = 0.0f;
 	for (uint32_t i = 0; i < MeterBufferLength; i++)
 	{
-		sum += mMeterBuffer[meter][i] * mMeterBuffer[meter][i];
+		sum += fabs(mMeterBuffer[meter][i]) * fabs(mMeterBuffer[meter][i]);
 	}
 
 	sum /= MeterBufferLength;
