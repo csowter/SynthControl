@@ -28,6 +28,8 @@ private:
 	float mSum;
 	bool mMute;
 
+	
+
 	float SineSample();
 	float SawSample();
 	float SquareSample();

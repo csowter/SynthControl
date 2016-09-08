@@ -35,10 +35,7 @@ void cMeter::Render(SDL_Renderer *renderer)
 
 	float newMeterValue = mAudioCore.GetLeftMeterValue();
 
-	if (newMeterValue > mMeterValue)
-		mMeterValue = newMeterValue;
-	else if (newMeterValue < mMeterValue)
-		mMeterValue -= 0.005f;
+	mMeterValue = newMeterValue;
 
 	SDL_RenderCopy(renderer, mMeterOffTexture, NULL, &mBoundingRectangle);
 

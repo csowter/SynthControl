@@ -23,7 +23,7 @@ float pitch[] =
 };
 
 cAudioCore::cAudioCore()
-	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150), mDelay(12000)
+	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150), mDelay(12000), mMeterIndex(0)
 {
 	for(uint32_t i = 0; i < 12; i++)
 	{
@@ -128,6 +128,9 @@ float cAudioCore::NextSample()
 
 	mDelay.WriteSample(sample);
 
+	mMeterBuffer[mMeterIndex++] = sample;
+	mMeterIndex &= (MeterBufferLength - 1);
+
 	return sample;
 }
 
@@ -156,5 +159,18 @@ void cAudioCore::OpenAudioDevice()
 		printf("opened Audio device %d: %s", device, SDL_GetAudioDeviceName(device, 0));
 	}
 	SDL_PauseAudioDevice(device, 0);
+}
+
+float cAudioCore::GetLeftMeterValue() const
+{
+	float sum = 0.0f;
+	for (uint32_t i = 0; i < MeterBufferLength; i++)
+	{
+		sum += mMeterBuffer[i] * mMeterBuffer[i];
+	}
+
+	sum /= MeterBufferLength;
+
+	return sqrtf(sum);
 }
 

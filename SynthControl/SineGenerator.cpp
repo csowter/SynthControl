@@ -24,6 +24,8 @@ float cSineGenerator::NextSample()
 {
 	mSum = mSum + mIncrement;
 	float sample = sin(mSum);
+
+	
 	
 	return sample;
 }

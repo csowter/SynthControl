@@ -28,13 +28,15 @@ public:
 
 	float NextSample();
 
-	float GetLeftMeterValue() const { return mLeftMeterValue; }
+	float GetLeftMeterValue() const;
 	float GetRightMeterValue() const { return mRightMeterValue;	}
 
 	float mLeftMeterValue;
 	float mRightMeterValue;
 private:
-	
+	static const int MeterBufferLength = 2048;
+	float mMeterBuffer[MeterBufferLength];
+	uint32_t mMeterIndex;
 	void OpenAudioDevice();
 };
 
