@@ -13,6 +13,12 @@ private:
 	int mMouseX;
 	int mMouseY;
 
+	float mValue;
+	float mMin;
+	float mMax;
+	int mStartRotation;
+	int mStopRotation;
+
 	void CreateTexture(SDL_Renderer *renderer, uint32_t diameter);
 public:
 	cRotary(SDL_Renderer *renderer, uint32_t x, uint32_t y, uint32_t diameter);

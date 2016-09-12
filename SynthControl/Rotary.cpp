@@ -5,6 +5,11 @@ cRotary::cRotary(SDL_Renderer *renderer, uint32_t x, uint32_t y, uint32_t diamet
 	: cWidget(x,y, diameter, diameter)
 {
 	CreateTexture(renderer, diameter);
+	mMin = 0;
+	mMax = 1;
+	mStartRotation = 270;
+	mStopRotation = 90;
+	mValue = 0.5f;
 }
 
 cRotary::~cRotary()
@@ -79,13 +84,29 @@ void cRotary::MouseMove(SDL_Event &e)
 	int x, y;
 	SDL_GetMouseState(&x, &y);
 
+	float valueRange = mMax - mMin;
+
+	int rotationRange = mStopRotation - (mStartRotation);
+	if (rotationRange < 0)
+		rotationRange *= -1;
+
+	float valuePerStep = valueRange / rotationRange;
+
 	int delta = (x - mMouseX) + (mMouseY - y); 
 	mMouseX = x;
 	mMouseY = y;
-	mRotation += delta;
+	//mRotation += delta;
 
-	if (mRotation > 359) mRotation = 0;
-	if (mRotation < -359) mRotation = 0;
+	mValue += (valuePerStep * delta);
+	if (mValue < mMin)
+		mValue = mMin;
+	if (mValue > mMax)
+		mValue = mMax;
+
+	mRotation = ( mStartRotation + (mValue * (rotationRange / valueRange)));
+
+	//if (mRotation > 359) mRotation = 0;
+	//if (mRotation < -359) mRotation = 0;
 }
 
 void cRotary::Render(SDL_Renderer *renderer)
