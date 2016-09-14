@@ -20,6 +20,8 @@ public:
 	void MuteOscillators(bool mute, int oscillator);
 	void SwitchOscillator(int oscillator);
 	void SetGain(int oscillator, float gain);
+	void SetDelayGain(float gain){ mDelayTargetGain = gain; }
+	void SetPan(float pan){ mPan = pan; }
 
 	bool mGeneratorType[12];
 	iGenerator *mGenerators[12];
@@ -32,6 +34,8 @@ public:
 	cBiquad mBiquad;
 	cBiquad mBiquad1;
 	cDelay mDelay[2];
+	float mDelayGain;
+	float mDelayTargetGain;
 
 	sSample NextSample();
 
@@ -39,7 +43,7 @@ public:
 
 private:
 	SDL_AudioDeviceID mAudioDevice;
-	static const int MeterBufferLength = 4096;
+	static const int MeterBufferLength = 512;
 	float mMeterBuffer[2][MeterBufferLength];
 	uint32_t mMeterIndex;
 	void OpenAudioDevice();

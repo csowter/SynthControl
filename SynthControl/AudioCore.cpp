@@ -23,10 +23,10 @@ float pitch[] =
 };
 
 cAudioCore::cAudioCore()
-	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150), mMeterIndex(0), mPan(0.5f)
+	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150), mMeterIndex(0), mPan(0.5f), mDelayGain(0.25f), mDelayTargetGain(0.25f)
 {
-	mDelay[0].SetDelayLength(12000);
-	mDelay[1].SetDelayLength(12000);
+	mDelay[0].SetDelayLength(24000);
+	mDelay[1].SetDelayLength(24000);
 	for(uint32_t i = 0; i < 12; i++)
 	{
 		mGenerators[i] = new cSineGenerator();
@@ -128,8 +128,13 @@ cAudioCore::sSample cAudioCore::NextSample()
 	stereoSample.left = sample;
 	stereoSample.right = sample;
 
-	stereoSample.left += (mDelay[0].ReadSample() * 0.25);
-	stereoSample.right += (mDelay[1].ReadSample() * 0.25);
+	if (mDelayGain < mDelayTargetGain)
+		mDelayGain += 0.0002f;
+	else if (mDelayGain > mDelayTargetGain)
+		mDelayGain -= 0.0002f; 
+
+	stereoSample.left += (mDelay[0].ReadSample() * mDelayGain);
+	stereoSample.right += (mDelay[1].ReadSample() * mDelayGain);
 
 	stereoSample.left = stereoSample.left * sqrtf(1.0f - mPan);
 	stereoSample.right = stereoSample.right * sqrtf(mPan);
@@ -155,7 +160,7 @@ void cAudioCore::OpenAudioDevice()
 	audioSpecDesired.channels = 2;
 	audioSpecDesired.callback = audioCallback;
 	audioSpecDesired.userdata = this;
-	audioSpecDesired.samples = 512;
+	audioSpecDesired.samples = 1024;
 
 	mAudioDevice = SDL_OpenAudioDevice(NULL, 0, &audioSpecDesired, &audioSpecActual, SDL_AUDIO_ALLOW_ANY_CHANGE);
 	int NumberOFDevices = SDL_GetNumAudioDevices(0);

@@ -36,6 +36,7 @@ private:
 	bool mMute;
 	int mOscillator;
 public:
+	ButtonHandler() = delete;
 	ButtonHandler(cAudioCore &audio, int oscillator)
 		: mAudioCore(audio), mMute(false), mOscillator(oscillator)
 	{}
@@ -79,6 +80,38 @@ public:
 	}
 };
 
+class cDelayHandler : public iValueChangeHandler
+{
+private:
+	cAudioCore &mAudioCore;
+
+public:
+	cDelayHandler(cAudioCore &audioCore)
+		: mAudioCore(audioCore)
+	{}
+
+	void ValueChange(float newValue)
+	{
+		mAudioCore.SetDelayGain(newValue);
+	}
+};
+
+class cPanHandler : public iValueChangeHandler
+{
+private:
+	cAudioCore &mAudioCore;
+
+public:
+	cPanHandler(cAudioCore &audioCore)
+		: mAudioCore(audioCore)
+	{}
+
+	void ValueChange(float newValue)
+	{
+		mAudioCore.SetPan(newValue);
+	}
+};
+
 void cSynthControl::CreateWidgets()
 {
 	for(int i = 0; i < 12; i++)
@@ -101,6 +134,14 @@ void cSynthControl::CreateWidgets()
 	}
 	mWidgets.push_back(new cMeter(mRenderer, mAudioCore, 0, 10, 10, 8, 150));
 	mWidgets.push_back(new cMeter(mRenderer, mAudioCore, 1, 20, 10, 8, 150));
+
+	cRotary *delayRotary = new cRotary(mRenderer, 400, 10, 40);
+	delayRotary->AddValueChangeHandler(new cDelayHandler(mAudioCore));
+	mWidgets.push_back(delayRotary);
+
+	cRotary *panRotary = new cRotary(mRenderer, 0, 180, 40);
+	panRotary->AddValueChangeHandler(new cPanHandler(mAudioCore));
+	mWidgets.push_back(panRotary);
 }
 
 void cSynthControl::Run()

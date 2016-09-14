@@ -1,12 +1,13 @@
 #include "Rotary.h"
 #include <cstdio>
+#include <algorithm>
 
 cRotary::cRotary(SDL_Renderer *renderer, uint32_t x, uint32_t y, uint32_t diameter)
 	: cWidget(x,y, diameter, diameter)
 {
 	CreateTexture(renderer, diameter);
-	mMin = 0;
-	mMax = 1;
+	mMin = 0.0001f;
+	mMax = 0.99999999f;
 	mStartRotation = 270;
 	mStopRotation = 90;
 	mValue = 0.5f;
@@ -84,6 +85,8 @@ void cRotary::MouseMove(SDL_Event &e)
 	int x, y;
 	SDL_GetMouseState(&x, &y);
 
+	float currentValue = mValue;
+
 	float valueRange = mMax - mMin;
 
 	int rotationRange = mStopRotation - (mStartRotation);
@@ -103,6 +106,10 @@ void cRotary::MouseMove(SDL_Event &e)
 	if (mValue > mMax)
 		mValue = mMax;
 
+
+	if (mValue != currentValue)
+		std::for_each(mValueChangeHandlers.begin(), mValueChangeHandlers.end(), [&](iValueChangeHandler *handler) {handler->ValueChange(mValue); });
+
 	mRotation = ( mStartRotation + (mValue * (rotationRange / valueRange)));
 
 	//if (mRotation > 359) mRotation = 0;
@@ -120,4 +127,10 @@ void cRotary::Render(SDL_Renderer *renderer)
 	SDL_Rect rect = { 0,0,mBoundingRectangle.w, mBoundingRectangle.h };
 	
 	SDL_RenderCopyEx(renderer, mTexture, &rect, &mBoundingRectangle, d, &centre, SDL_FLIP_NONE);
+}
+
+void cRotary::AddValueChangeHandler(iValueChangeHandler *handler)
+{
+	mValueChangeHandlers.push_back(handler);
+	handler->ValueChange(mValue);
 }
