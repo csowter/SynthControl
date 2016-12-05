@@ -80,6 +80,7 @@
     <ClCompile Include="Biquad.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Delay.cpp" />
+    <ClCompile Include="Envelope.cpp" />
     <ClCompile Include="Fader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Meter.cpp" />
@@ -96,6 +97,7 @@
     <ClInclude Include="Biquad.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Delay.h" />
+    <ClInclude Include="Envelope.h" />
     <ClInclude Include="Fader.h" />
     <ClInclude Include="Generator.h" />
     <ClInclude Include="Meter.h" />

@@ -23,7 +23,7 @@ float pitch[] =
 };
 
 cAudioCore::cAudioCore()
-	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150), mMeterIndex(0), mPan(0.5f), mDelayGain(0.25f), mDelayTargetGain(0.25f)
+	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150), mMeterIndex(0), mPan(0.5f), mDelayGain(0.25f), mDelayTargetGain(0.25f), mEnvelope(48000, 48000, 48000, 48000, 0.8, 0.4)
 {
 	mDelay[0].SetDelayLength(24000);
 	mDelay[1].SetDelayLength(24000);
@@ -80,6 +80,7 @@ void cAudioCore::SwitchOscillator(int oscillator)
 void cAudioCore::MuteOscillators(bool mute, int oscillator)
 {
 	mMute[oscillator] = mute;
+	mEnvelopeSample = 0;
 }
 
 void cAudioCore::SetGain(int oscillator, float gain)
@@ -121,8 +122,10 @@ cAudioCore::sSample cAudioCore::NextSample()
 		}
 
 		if (mGenerators[i] != nullptr)
-			sample += ((mGenerators[i]->NextSample() * mGain[i]));
+			sample += (mGenerators[i]->NextSample() * mGain[i] * mEnvelope[mEnvelopeSample]);
 	}
+
+	mEnvelopeSample++;
 		
 	sSample stereoSample;
 	stereoSample.left = sample;

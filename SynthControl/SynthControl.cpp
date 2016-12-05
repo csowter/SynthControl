@@ -43,7 +43,13 @@ public:
 
 	void MouseDown(SDL_Event &e)
 	{
-		mAudioCore.MuteOscillators(mMute, mOscillator);
+		mAudioCore.MuteOscillators(false, mOscillator);
+		mMute = !mMute;
+	}
+
+	void MouseUp(SDL_Event &e)
+	{
+		mAudioCore.MuteOscillators(true, mOscillator);
 		mMute = !mMute;
 	}
 };
@@ -116,7 +122,7 @@ void cSynthControl::CreateWidgets()
 {
 	for(int i = 0; i < 12; i++)
 	{
-		cButton *muteButton = new cToggleButton(mRenderer, i * 50, 600, 40, 40);
+		cButton *muteButton = new cButton(mRenderer, i * 50, 600, 40, 40);
 		ButtonHandler *handler = new ButtonHandler(mAudioCore, i);
 		muteButton->AddEventHandler(handler);
 		mWidgets.push_back(muteButton);

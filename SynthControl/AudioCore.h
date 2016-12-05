@@ -5,6 +5,7 @@
 #include <SDL.h>
 #include "Biquad.h"
 #include "Delay.h"
+#include "Envelope.h"
 
 class cAudioCore
 {
@@ -25,6 +26,8 @@ public:
 
 	bool mGeneratorType[12];
 	iGenerator *mGenerators[12];
+	cEnvelope mEnvelope;
+	uint32_t mEnvelopeSample;
 
 	bool mMute[12];
 
