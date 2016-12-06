@@ -4,7 +4,7 @@
 #include <cmath>
 #include "SineGenerator.h"
 #include "SawGenerator.h"
-
+#include "SquareGenerator.h"
 
 float pitch[] =
 {
@@ -23,17 +23,17 @@ float pitch[] =
 };
 
 cAudioCore::cAudioCore()
-	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150), mMeterIndex(0), mPan(0.5f), mDelayGain(0.25f), mDelayTargetGain(0.25f), mEnvelope(48000, 48000, 48000, 48000, 0.8, 0.4)
+	: mBiquad(cBiquad::eBiquadType::LPF, 48000, 300), mBiquad1(cBiquad::eBiquadType::LPF, 48000, 150), mMeterIndex(0), mPan(0.5f), mDelayGain(0.25f), mDelayTargetGain(0.25f), mEnvelope(480, 480, 200, 200, 0.8, 0.4)
 {
 	mDelay[0].SetDelayLength(24000);
 	mDelay[1].SetDelayLength(24000);
 	for(uint32_t i = 0; i < 12; i++)
 	{
-		mGenerators[i] = new cSineGenerator();
+		mGenerators[i] = new cSquareGenerator();
 		mGenerators[i]->SetSampleRate(48000);
 		mGenerators[i]->SetFrequency(pitch[i]);
 		
-		mGeneratorType[i] = false;
+		mGeneratorType[i] = square;
 
 		mGain[i] = 0.0f;
 		mMute[i] = true;
@@ -60,21 +60,26 @@ void cAudioCore::SwitchOscillator(int oscillator)
 	mGenerators[oscillator] = nullptr;
 	delete generator;
 	
-	if(!mGeneratorType[oscillator])
+	switch (mGeneratorType[oscillator])
 	{
+	case sine:
+		generator = new cSquareGenerator();
+		mGeneratorType[oscillator] = square;
+		break;
+	case square:
 		generator = new cSawGenerator();
-	}
-	else
-	{
+		mGeneratorType[oscillator] = saw;
+		break;
+	case saw:
 		generator = new cSineGenerator();
+		mGeneratorType[oscillator] = sine;
+		break;
 	}
 
 	generator->SetSampleRate(48000);
 	generator->SetFrequency(pitch[oscillator]);
 
 	mGenerators[oscillator] = generator;
-
-	mGeneratorType[oscillator] = !mGeneratorType[oscillator];
 }
 
 void cAudioCore::MuteOscillators(bool mute, int oscillator)
@@ -122,7 +127,7 @@ cAudioCore::sSample cAudioCore::NextSample()
 		}
 
 		if (mGenerators[i] != nullptr)
-			sample += (mGenerators[i]->NextSample() * mGain[i] * mEnvelope[mEnvelopeSample]);
+			sample += (mGenerators[i]->NextSample() * mGain[i]);// *mEnvelope[mEnvelopeSample]);
 	}
 
 	mEnvelopeSample++;

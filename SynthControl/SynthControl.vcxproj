@@ -88,6 +88,7 @@
     <ClCompile Include="Rotary.cpp" />
     <ClCompile Include="SawGenerator.cpp" />
     <ClCompile Include="SineGenerator.cpp" />
+    <ClCompile Include="SquareGenerator.cpp" />
     <ClCompile Include="SynthControl.cpp" />
     <ClCompile Include="ToggleButton.cpp" />
     <ClCompile Include="Widget.cpp" />
@@ -106,6 +107,7 @@
     <ClInclude Include="Rotary.h" />
     <ClInclude Include="SawGenerator.h" />
     <ClInclude Include="SineGenerator.h" />
+    <ClInclude Include="SquareGenerator.h" />
     <ClInclude Include="SynthControl.h" />
     <ClInclude Include="ToggleButton.h" />
     <ClInclude Include="ValueChangeHandler.h" />

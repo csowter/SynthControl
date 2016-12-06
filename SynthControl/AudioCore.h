@@ -16,6 +16,13 @@ public:
 		float right;
 	};
 
+	enum eGenerator
+	{
+		sine,
+		square,
+		saw,
+	};
+
 	cAudioCore();
 	~cAudioCore();
 	void MuteOscillators(bool mute, int oscillator);
@@ -24,7 +31,7 @@ public:
 	void SetDelayGain(float gain){ mDelayTargetGain = gain; }
 	void SetPan(float pan){ mPan = pan; }
 
-	bool mGeneratorType[12];
+	eGenerator mGeneratorType[12];
 	iGenerator *mGenerators[12];
 	cEnvelope mEnvelope;
 	uint32_t mEnvelopeSample;
